@@ -17,10 +17,19 @@ import org.springframework.web.client.RestTemplate;
 public class HttpClientConfig {
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder, MeterRegistry meterRegistry) {
+    public RestTemplate galleryRestTemplate(RestTemplateBuilder restTemplateBuilder, MeterRegistry meterRegistry) {
+        return createRestTemplate(restTemplateBuilder, meterRegistry, "gallery", 10, 10);
+    }
+    @Bean
+    public RestTemplate descRestTemplate(RestTemplateBuilder restTemplateBuilder, MeterRegistry meterRegistry) {
+        return createRestTemplate(restTemplateBuilder, meterRegistry, "desc", 10, 10);
+    }
+
+    private RestTemplate createRestTemplate(RestTemplateBuilder restTemplateBuilder, MeterRegistry meterRegistry,
+                                            String clientName, int maxTotal, int maxPerRoute) {
         final PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
-        manager.setMaxTotal(10);
-        manager.setDefaultMaxPerRoute(10);
+        manager.setMaxTotal(maxTotal);
+        manager.setDefaultMaxPerRoute(maxPerRoute);
 
         final RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(50)
@@ -28,15 +37,15 @@ public class HttpClientConfig {
                 .build();
 
         meterRegistry.gauge(
-                "httpClientLeased", manager,
+                clientName + "-httpClientLeased", manager,
                 m -> m.getTotalStats().getLeased()
         );
         meterRegistry.gauge(
-                "httpClientMax", manager,
+                clientName + "-httpClientMax", manager,
                 m -> m.getTotalStats().getMax()
         );
         meterRegistry.gauge(
-                "httpClientUtilization", manager,
+                clientName + "-httpClientUtilization", manager,
                 m -> {
                     final PoolStats totalStats = m.getTotalStats();
                     final int leased = totalStats.getLeased();

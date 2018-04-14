@@ -3,6 +3,7 @@ package pl.allegro.atl.adapters.gallery;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micrometer.core.annotation.Timed;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class GalleryAdapter implements GalleryApi {
     private final String address;
 
     public GalleryAdapter(
-            RestTemplate restTemplate,
+            @Qualifier("galleryRestTemplate") RestTemplate restTemplate,
             @Value("${adapters.gallery.address}") String address
     ) {
         this.restTemplate = restTemplate;
@@ -35,7 +36,7 @@ public class GalleryAdapter implements GalleryApi {
 
     @Override
     @Timed(value = "adapters.gallery.find-by-id", histogram = true)
-    @Async("myThreadPool")
+    @Async("galleryPool")
     public CompletableFuture<Gallery> findGalleryForOffer(String offerId) {
         try {
             ResponseEntity<GalleryDto> response =

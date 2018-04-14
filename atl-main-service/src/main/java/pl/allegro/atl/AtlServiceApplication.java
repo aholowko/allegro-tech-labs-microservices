@@ -31,14 +31,28 @@ public class AtlServiceApplication {
     }
 
     @Bean
-    public Executor myThreadPool(MeterRegistry registry) {
+    public Executor mainPool(MeterRegistry registry) {
+        return createExecutor(registry, "mainPool");
+    }
+
+    @Bean
+    public Executor descPool(MeterRegistry registry) {
+        return createExecutor(registry, "descPool");
+    }
+
+    @Bean
+    public Executor galleryPool(MeterRegistry registry) {
+        return createExecutor(registry, "galleryPool");
+    }
+
+    private Executor createExecutor(MeterRegistry registry, String mainPool) {
         final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(1000);
         final ThreadPoolExecutor executor = new ThreadPoolExecutor(
                 20, 20,
                 1, TimeUnit.MINUTES,
                 queue
         );
-        ThreadPoolMetrics.createGauges(registry, "myThreadPool", executor, queue);
+        ThreadPoolMetrics.createGauges(registry, mainPool, executor, queue);
         return executor;
     }
 

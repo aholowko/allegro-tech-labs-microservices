@@ -23,7 +23,7 @@ class AggregatingOfferFacade implements OfferFacade {
     }
 
     @Override
-    @Async("myThreadPool")
+    @Async("mainPool")
     public CompletableFuture<Offer> findById(String id) {
         final CoreOffer coreOffer = offerRepository.findById(id)
                 .orElseThrow(() -> new OfferNotFoundException(id));

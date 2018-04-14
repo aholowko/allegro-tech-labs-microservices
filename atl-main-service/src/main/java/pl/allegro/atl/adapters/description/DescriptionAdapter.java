@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micrometer.core.annotation.Timed;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class DescriptionAdapter implements DescriptionApi {
     private final String address;
 
     public DescriptionAdapter(
-            RestTemplate restTemplate,
+            @Qualifier("descRestTemplate") RestTemplate restTemplate,
             @Value("${adapters.description.address}") String address
     ) {
         this.restTemplate = restTemplate;
@@ -33,7 +34,7 @@ public class DescriptionAdapter implements DescriptionApi {
 
     @Override
     @Timed(value = "adapters.description.find-by-id", histogram = true)
-    @Async("myThreadPool")
+    @Async("descPool")
     public CompletableFuture<Description> findDescriptionForOffer(String offerId) {
         try {
             ResponseEntity<DescriptionDto> response =

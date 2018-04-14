@@ -87,3 +87,10 @@ time http http://127.0.0.1:8080/offers/12345
 # 6.3
 
 wrk -t2 -c20 -d30s -R50 --latency -s random_offers.lua http://127.0.0.1:8080
+
+
+wrk -t2 -c10 -d30s -R50 --latency -s random_offers.lua http://127.0.0.1:8080
+
+
+
+.
