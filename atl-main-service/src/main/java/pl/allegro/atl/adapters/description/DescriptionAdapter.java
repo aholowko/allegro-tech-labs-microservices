@@ -40,21 +40,22 @@ public class DescriptionAdapter implements DescriptionApi {
                     restTemplate.getForEntity(address + "/descriptions/{offerId}", DescriptionDto.class, offerId);
 
             return CompletableFuture.completedFuture(new Description(response.getBody().getDescription()));
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new DescriptionNotFoundException(offerId);
-            } else {
-                throw new ExternalDependencyAdapterException(
-                        "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode()
-                );
-            }
-        } catch (HttpServerErrorException e) {
-            throw new ExternalDependencyErrorException(
-                    "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode(),
-                    e
-            );
+//        } catch (HttpClientErrorException e) {
+//            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+//                throw new DescriptionNotFoundException(offerId);
+//            } else {
+//                throw new ExternalDependencyAdapterException(
+//                        "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode()
+//                );
+//            }
+//        } catch (HttpServerErrorException e) {
+//            throw new ExternalDependencyErrorException(
+//                    "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode(),
+//                    e
+//            );
         } catch (Exception e) {
-            throw new ExternalDependencyCommunicationException("Unable to fetch description for offer id: " + offerId, e);
+            return CompletableFuture.completedFuture(new Description("empty"));
+//            throw new ExternalDependencyCommunicationException("Unable to fetch description for offer id: " + offerId, e);
         }
     }
 }

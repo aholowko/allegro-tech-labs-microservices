@@ -66,7 +66,7 @@ toxiproxy-cli toxic add -n mongo_latency -t latency -tox 1.0 -a latency=10000 -d
 wrk -t2 -c20 -d120s -R100 --latency -s random_offers.lua http://127.0.0.1:8080
 
 
-http http://127.0.0.1:8080/actuate/info
+http http://127.0.0.1:8080/actuator/info
 
 
 # 5.2
@@ -87,5 +87,3 @@ time http http://127.0.0.1:8080/offers/12345
 # 6.3
 
 wrk -t2 -c20 -d30s -R50 --latency -s random_offers.lua http://127.0.0.1:8080
-
-

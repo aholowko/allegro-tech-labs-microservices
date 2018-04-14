@@ -24,7 +24,7 @@ public class HttpClientConfig {
 
         final RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(50)
-                .setSocketTimeout(200)
+                .setSocketTimeout(1000)
                 .build();
 
         meterRegistry.gauge(

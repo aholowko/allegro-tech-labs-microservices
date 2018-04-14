@@ -15,6 +15,7 @@ import pl.allegro.atl.adapters.common.ExternalDependencyAdapterException;
 import pl.allegro.atl.adapters.common.ExternalDependencyCommunicationException;
 import pl.allegro.atl.adapters.common.ExternalDependencyErrorException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,21 +42,22 @@ public class GalleryAdapter implements GalleryApi {
                     restTemplate.getForEntity(address + "/galleries/{offerId}", GalleryDto.class, offerId);
 
             return CompletableFuture.completedFuture(new Gallery(response.getBody().getImageUrls()));
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new GalleryNotFoundException(offerId);
-            } else {
-                throw new ExternalDependencyAdapterException(
-                        "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode()
-                );
-            }
-        } catch (HttpServerErrorException e) {
-            throw new ExternalDependencyErrorException(
-                    "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode(),
-                    e
-            );
+//        } catch (HttpClientErrorException e) {
+//            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+//                throw new GalleryNotFoundException(offerId);
+//            } else {
+//                throw new ExternalDependencyAdapterException(
+//                        "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode()
+//                );
+//            }
+//        } catch (HttpServerErrorException e) {
+//            throw new ExternalDependencyErrorException(
+//                    "Unable to fetch description for offer id: " + offerId + ". Response code: " + e.getRawStatusCode(),
+//                    e
+//            );
         } catch (Exception e) {
-            throw new ExternalDependencyCommunicationException("Unable to fetch description for offer id: " + offerId, e);
+            return CompletableFuture.completedFuture(new Gallery(Collections.emptyList()));
+//            throw new ExternalDependencyCommunicationException("Unable to fetch description for offer id: " + offerId, e);
         }
     }
 }
