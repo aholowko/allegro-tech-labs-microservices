@@ -6,6 +6,7 @@ import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -15,6 +16,7 @@ import pl.allegro.atl.adapters.common.ExternalDependencyCommunicationException;
 import pl.allegro.atl.adapters.common.ExternalDependencyErrorException;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class GalleryAdapter implements GalleryApi {
@@ -32,12 +34,13 @@ public class GalleryAdapter implements GalleryApi {
 
     @Override
     @Timed(value = "adapters.gallery.find-by-id", histogram = true)
-    public Gallery findGalleryForOffer(String offerId) {
+    @Async("myThreadPool")
+    public CompletableFuture<Gallery> findGalleryForOffer(String offerId) {
         try {
             ResponseEntity<GalleryDto> response =
                     restTemplate.getForEntity(address + "/galleries/{offerId}", GalleryDto.class, offerId);
 
-            return new Gallery(response.getBody().getImageUrls());
+            return CompletableFuture.completedFuture(new Gallery(response.getBody().getImageUrls()));
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new GalleryNotFoundException(offerId);

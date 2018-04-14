@@ -1,11 +1,14 @@
 package pl.allegro.atl.adapters.description;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -30,12 +33,13 @@ public class DescriptionAdapter implements DescriptionApi {
 
     @Override
     @Timed(value = "adapters.description.find-by-id", histogram = true)
-    public Description findDescriptionForOffer(String offerId) {
+    @Async("myThreadPool")
+    public CompletableFuture<Description> findDescriptionForOffer(String offerId) {
         try {
             ResponseEntity<DescriptionDto> response =
                     restTemplate.getForEntity(address + "/descriptions/{offerId}", DescriptionDto.class, offerId);
 
-            return new Description(response.getBody().getDescription());
+            return CompletableFuture.completedFuture(new Description(response.getBody().getDescription()));
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new DescriptionNotFoundException(offerId);

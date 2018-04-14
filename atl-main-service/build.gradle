@@ -49,6 +49,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-undertow')
 	compile('org.jolokia:jolokia-core')
 
+	compile('org.apache.httpcomponents:httpclient:4.5.5')
+
 	compile("io.micrometer:micrometer-registry-jmx:${versions.micrometer}")
 	compile("io.micrometer:micrometer-registry-graphite:${versions.micrometer}")
 

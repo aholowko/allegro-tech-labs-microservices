@@ -1,5 +1,7 @@
 package pl.allegro.atl.ports.rest;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +19,7 @@ public class OfferController {
     }
 
     @GetMapping(path = "/offers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Offer findOffer(@PathVariable("id") String id) {
+    public CompletableFuture<Offer> findOffer(@PathVariable("id") String id) {
         return offerFacade.findById(id);
     }
 }

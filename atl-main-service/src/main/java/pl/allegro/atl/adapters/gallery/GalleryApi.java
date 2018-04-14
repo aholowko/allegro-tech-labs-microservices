@@ -1,7 +1,9 @@
 package pl.allegro.atl.adapters.gallery;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface GalleryApi {
 
-    Gallery findGalleryForOffer(String offerId);
+    CompletableFuture<Gallery> findGalleryForOffer(String offerId);
 }
 

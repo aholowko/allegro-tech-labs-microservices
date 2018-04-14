@@ -12,6 +12,9 @@ public class MongoConfig {
     public MongoClientOptions mongoClientOptions() {
         return MongoClientOptions.builder()
                 .alwaysUseMBeans(true)
+                .connectTimeout(20)
+//                .socketTimeout(200)
+                .socketTimeout(30_000)  // #5.1
                 .addConnectionPoolListener(new JMXConnectionPoolListener())
                 .build();
     }

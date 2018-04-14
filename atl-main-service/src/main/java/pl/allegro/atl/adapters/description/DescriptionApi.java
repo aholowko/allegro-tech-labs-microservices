@@ -1,7 +1,9 @@
 package pl.allegro.atl.adapters.description;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface DescriptionApi {
 
-    Description findDescriptionForOffer(String offerId);
+    CompletableFuture<Description> findDescriptionForOffer(String offerId);
 }
 

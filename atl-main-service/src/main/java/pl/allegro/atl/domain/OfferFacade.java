@@ -1,5 +1,7 @@
 package pl.allegro.atl.domain;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface OfferFacade {
-    Offer findById(String id);
+    CompletableFuture<Offer> findById(String id);
 }
